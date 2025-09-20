@@ -6,17 +6,6 @@ import java.sql.SQLException;
 
 public class Main {
     public static void  main(String[] args) {
-        // реализуйте алгоритм здесь
-        final Connection connection = Util.getConnection();
 
-        if (connection != null) {
-            try {
-                connection.close();
-                System.out.println("Connection closed");
-            } catch (final SQLException e) {
-                System.out.println("Failed to close connection");
-                e.printStackTrace();
-            }
-        }
     }
 }

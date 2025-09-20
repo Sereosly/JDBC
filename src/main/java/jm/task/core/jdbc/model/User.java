@@ -1,34 +1,36 @@
 package jm.task.core.jdbc.model;
 
-import javax.persistence.Column;
-import javax.persistence.Id;
-import javax.persistence.Table;
+import javax.persistence.*;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 
-@Table
+@Entity
+@Table(name = "users")
 public class User {
+
     @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "id")
     private Long id;
 
-    @Column
+    @Column(name = "name")
     private String name;
 
-    @Column
+    @Column(name = "lastName")
     private String lastName;
 
-    @Column
+    @Column(name = "age")
     private Byte age;
 
     public User() {
 
     }
 
-    public User(final ResultSet resultSet) throws SQLException {
-        this.id = resultSet.getLong("id");
-        this.name = resultSet.getString("name");
-        this.lastName = resultSet.getString("lastName");
-        this.age = resultSet.getByte("age");
+    public User(final Long id, final String name, final String lastName, final Byte age) {
+        this.id = id;
+        this.name = name;
+        this.lastName = lastName;
+        this.age = age;
     }
 
     public Long getId() {

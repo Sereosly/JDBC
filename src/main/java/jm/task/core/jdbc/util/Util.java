@@ -1,41 +1,41 @@
 package jm.task.core.jdbc.util;
 
+import org.hibernate.SessionFactory;
+import java.io.IOException;
 import java.io.InputStream;
-import java.sql.Connection;
-import java.sql.DriverManager;
-import java.sql.SQLException;
+import org.hibernate.SessionFactory;
+import org.hibernate.cfg.Configuration;
 import java.util.Properties;
 
 public class Util {
     // реализуйте настройку соеденения с БД
-    private static final String DB_URL;
-    private static final String DB_USERNAME;
-    private static final String DB_PASSWORD;
+    private static final SessionFactory sessionFactory;
+
 
     static {
-        try (final InputStream input = Util.class.getClassLoader().getResourceAsStream("application.properties")) {
-            final Properties props = new Properties();
+        try{
+            Properties props = new Properties();
+            InputStream input = Util.class.getClassLoader().getResourceAsStream("application.properties");
+            if(input == null){
+                throw new RuntimeException("Failed CONFIG");
+            }
             props.load(input);
-            DB_URL = props.getProperty("db.url");
-            DB_USERNAME = props.getProperty("db.username");
-            DB_PASSWORD = props.getProperty("db.password");
-        } catch (final Exception e) {
-            throw new RuntimeException("FAILED CONFIG", e);
+
+            Configuration configuration = new Configuration();
+            configuration.addProperties(props);
+            configuration.addAnnotatedClass(jm.task.core.jdbc.model.User.class);
+            sessionFactory = configuration.buildSessionFactory();
+        } catch (IOException | RuntimeException e){
+            throw new ExceptionInInitializerError(e);
         }
     }
-    public static Connection getConnection() {
-        try {
-            Class.forName("org.postgresql.Driver");
-        } catch (final ClassNotFoundException e) {
-            throw new RuntimeException(e);
-        }
-        try {
-            final Connection connection = DriverManager.getConnection(DB_URL, DB_USERNAME, DB_PASSWORD);
-            System.out.println("Connected to database successfully");
-            return connection;
-        } catch (final SQLException e) {
-            e.printStackTrace();
-            return null;
+
+    public static SessionFactory getSessionFactory() {
+        return sessionFactory;
+    }
+    public static void shutdown() {
+        if (sessionFactory != null) {
+            sessionFactory.close();
         }
     }
 }
