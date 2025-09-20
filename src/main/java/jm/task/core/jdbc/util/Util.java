@@ -14,14 +14,14 @@ public class Util {
 
     static {
         try{
-            Properties props = new Properties();
-            InputStream input = Util.class.getClassLoader().getResourceAsStream("application.properties");
+            final Properties props = new Properties();
+            final InputStream input = Util.class.getClassLoader().getResourceAsStream("application.properties");
             if(input == null){
                 throw new RuntimeException("Failed CONFIG");
             }
             props.load(input);
 
-            Configuration configuration = new Configuration();
+            final Configuration configuration = new Configuration();
             configuration.addProperties(props);
             configuration.addAnnotatedClass(jm.task.core.jdbc.model.User.class);
             sessionFactory = configuration.buildSessionFactory();
