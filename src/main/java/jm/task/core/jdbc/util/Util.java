@@ -13,29 +13,29 @@ public class Util {
     private static final String DB_PASSWORD;
 
     static {
-        try (InputStream input = Util.class.getClassLoader().getResourceAsStream("application.properties")) {
-            Properties props = new Properties();
+        try (final InputStream input = Util.class.getClassLoader().getResourceAsStream("application.properties")) {
+            final Properties props = new Properties();
             props.load(input);
             DB_URL = props.getProperty("db.url");
             DB_USERNAME = props.getProperty("db.username");
             DB_PASSWORD = props.getProperty("db.password");
-        } catch (Exception e) {
+        } catch (final Exception e) {
             throw new RuntimeException("FAILED CONFIG", e);
         }
     }
-    public static Connection getConnection(){
+    public static Connection getConnection() {
         try {
             Class.forName("org.postgresql.Driver");
-        } catch (ClassNotFoundException e) {
+        } catch (final ClassNotFoundException e) {
             throw new RuntimeException(e);
         }
-        Connection connection = null;
         try {
-            connection = DriverManager.getConnection(DB_URL,DB_USERNAME,DB_PASSWORD);
+            final Connection connection = DriverManager.getConnection(DB_URL, DB_USERNAME, DB_PASSWORD);
             System.out.println("Connected to database successfully");
-        } catch (SQLException e) {
+            return connection;
+        } catch (final SQLException e) {
             e.printStackTrace();
+            return null;
         }
-        return connection;
     }
 }
